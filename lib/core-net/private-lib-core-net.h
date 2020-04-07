@@ -884,7 +884,7 @@ struct lws_spawn_piped {
 	lws_sorted_usec_list_t		sul;
 
 	struct lws			*stdwsi[3];
-	int				pipe_fds[3][2];
+	lws_filefd_type			pipe_fds[3][2];
 	int				count_log_lines;
 
 	lws_usec_t			created; /* set by lws_spawn_piped() */
@@ -892,9 +892,13 @@ struct lws_spawn_piped {
 
 	lws_usec_t			accounting[4];
 
+#if defined(WIN32)
+	HANDLE				child_pid;
+#else
 	pid_t				child_pid;
 
 	siginfo_t			si;
+#endif
 
 	uint8_t				pipes_alive:2;
 	uint8_t				we_killed_him_timeout:1;
